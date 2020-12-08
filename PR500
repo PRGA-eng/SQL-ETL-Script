@@ -1,0 +1,41 @@
+BEGIN TRY
+    DROP TABLE PR500
+END TRY
+BEGIN CATCH
+END CATCH
+BEGIN TRY
+    DROP TABLE #temp
+END TRY
+BEGIN CATCH
+END CATCH
+CREATE TABLE PR500
+    ([Date] varchar(50)
+    ,[Ticker] varchar(50)
+    ,[Open] varchar(50)
+    ,[High] varchar(50)
+    ,[Low] varchar(50)
+    ,[Close] varchar(50)
+    ,[Volume] varchar(50))
+CREATE TABLE #temp
+    ([Date] varchar(50)
+    ,[Ticker] varchar(50)
+    ,[Open] varchar(50)
+    ,[High] varchar(50)
+    ,[Low] varchar(50)
+    ,[Close] varchar(50)
+    ,[Volume] varchar(50))
+BULK INSERT #temp
+   FROM 'C:\testfiles\pr500hst.txt'
+   WITH
+      (
+         FIELDTERMINATOR =',',
+         ROWTERMINATOR = '\n',
+         FIRSTROW = 1
+      )
+      
+INSERT INTO [dbo].[PR500]
+SELECT * FROM #temp
+WHERE [Date] = '20200908'
+ORDER BY [Ticker]
+SELECT * FROM [dbo].[PR500]
+DROP TABLE #temp
